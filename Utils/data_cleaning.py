@@ -1,0 +1,3 @@
+def clean_data(df):
+    ...
+    return cleaned_df
