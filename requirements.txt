@@ -1,8 +1,8 @@
-streamlit
+'''streamlit
 pandas
 numpy
 openpyxl
 matplotlib
 plotly
 scikit-learn
-fpdf2
+fpdf2'''
