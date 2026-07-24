@@ -1,5 +1,5 @@
 # Gate-Pass-Log-Analyzer
-An AI-powered web application for analyzing CISF gate pass logs. It provides interactive dashboards, generates security insights, and detects anomalous entry/exit patterns , purpose of visiting , peak traffic hours on each gate using machine learning.
+An AI-powered web application for analyzing  gate pass logs. It provides interactive dashboards, generates security insights, and detects anomalous entry/exit patterns , purpose of visiting , peak traffic hours on each gate using machine learning.
 
 # ✨ Features
 
@@ -52,7 +52,7 @@ Gate-Pass-Log-Analyzer/
 │   ├── report_generator.py
 │   └── helper.py
 │
-├── models/                    # AI / Analysis (Your work)
+├── models/                    # AI / Analysis 
 │   ├── __init__.py
 │   ├── purpose_classifier.py
 │   ├── anomaly_detector.py
