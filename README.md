@@ -27,6 +27,8 @@ The dashboard provides:
 - Purpose Distribution
 - Vehicle Analysis
 - Anomaly Summary
+ ## 📂 Project Structure
+ ```
 Gate-Pass-Log-Analyzer/
 │
 ├── app.py                     # Main Streamlit app 
@@ -69,6 +71,9 @@ Gate-Pass-Log-Analyzer/
 │
 └── notebooks/                 # For experimentation only
     └── data_analysis.ipynb
+     ```
+
+---
 
 ## ⚙️ Workflow
 
