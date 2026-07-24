@@ -105,18 +105,26 @@ Traffic Insights      Semantic Clustering
 ```
 
 ---
+## 🔍 Machine Learning
+
+The project applies an unsupervised anomaly detection algorithm to identify unusual visitor activities such as:
+
+- Peak traffic hours at each gate
+- Unusual entry timings
+- Abnormal visitor frequency
+- Suspicious movement patterns
+
+These observations can assist security teams in prioritizing records for further review.
 
 
 ## 📈 Future Enhancements
 
-- QR Code Integration
-- RFID Support
 - Face Recognition-based Entry
 - Email Alerts
 - SMS Notifications
 - Real-time Monitoring
 - Predictive Visitor Forecasting
-- LLM-powered Natural Language Search
+
 
 ---
 
@@ -129,7 +137,7 @@ Traffic Insights      Semantic Clustering
 - Industrial Facilities
 - Research Campuses
 
-
+⭐ If you find this project useful, consider giving it a star.
 
 
 
