@@ -25,4 +25,4 @@ def show_gate_analysis():
 
     gate_count.columns = ["Gate No", "Visitors"]
 
-    st.dataframe(gate_count, use_container_width=True)
+    st.dataframe(gate_count, width="stretch")

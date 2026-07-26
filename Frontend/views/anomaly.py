@@ -36,5 +36,5 @@ def show_anomaly():
 
         st.dataframe(
             anomaly_df,
-            use_container_width=True
+            width="stretch"
         )

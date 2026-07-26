@@ -30,7 +30,7 @@ def show_ai_purpose():
                 "Purpose of Visit": "Visitors"
             }
         ),
-        use_container_width=True
+        width="stretch"
     )
 
     st.subheader("📊 Purpose Distribution")

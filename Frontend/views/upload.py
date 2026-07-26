@@ -20,7 +20,7 @@ def show_upload():
         st.subheader("Preview")
         st.dataframe(
             df,
-            use_container_width=True
+            width="stretch"
         )
 
         # Gate-wise Bar Chart
@@ -54,7 +54,7 @@ def show_upload():
 
             st.dataframe(
                 df,
-                use_container_width=True
+                width="stretch"
             )
 
 

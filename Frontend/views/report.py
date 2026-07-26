@@ -40,7 +40,7 @@ def show_report():
 
     })
 
-    st.dataframe(summary, use_container_width=True)
+    st.dataframe(summary, width="stretch")
 
     st.divider()
 

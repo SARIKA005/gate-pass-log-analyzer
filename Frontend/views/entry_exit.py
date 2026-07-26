@@ -44,4 +44,4 @@ def show_entry_exit():
     available_columns = [col for col in columns if col in df.columns]
 
     st.subheader("Visitor Entry & Exit Details")
-    st.dataframe(df[available_columns], use_container_width=True)
+    st.dataframe(df[available_columns], width="stretch")

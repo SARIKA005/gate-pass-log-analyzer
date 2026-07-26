@@ -40,7 +40,7 @@ def show_peak_traffic():
 
     st.subheader("Visitors by Hour")
 
-    st.dataframe(hour_count, use_container_width=True)
+    st.dataframe(hour_count, width="stretch")
 
     st.subheader("Peak Traffic Chart")
 
