@@ -3,6 +3,26 @@ import streamlit as st
 
 def show_sidebar():
 
+    # ==========================
+    # BSP Logo
+    # ==========================
+    st.sidebar.image(
+        "assets/bsp_logo.jpg",
+        width="stretch"
+    )
+
+    # ==========================
+    # Project Title
+    # ==========================
+    st.sidebar.markdown("## 🏭 Bhilai Steel Plant")
+    st.sidebar.caption("Steel Authority of India Limited (SAIL)")
+    st.sidebar.markdown("### Gate Pass Log Analyzer")
+
+    st.sidebar.divider()
+
+    # ==========================
+    # Navigation
+    # ==========================
     page = st.sidebar.radio(
 
         "Navigation",
@@ -31,7 +51,10 @@ def show_sidebar():
 
     st.sidebar.divider()
 
-    if st.sidebar.button("Logout"):
+    # ==========================
+    # Logout Button
+    # ==========================
+    if st.sidebar.button("🚪 Logout"):
 
         st.session_state.logged_in = False
 

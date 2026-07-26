@@ -7,51 +7,92 @@ def show_peak_traffic():
     st.title("🚦 Peak Traffic Detection")
 
     if "data" not in st.session_state:
-
         st.warning("Please upload an Excel file first.")
-
         return
 
-    df = st.session_state["data"]
+    df = st.session_state["data"].copy()
 
     if "Entry Time" not in df.columns:
-
         st.error("Column 'Entry Time' not found.")
-
         return
 
-    # Convert Entry Time to datetime
-    df["Entry Time"] = pd.to_datetime(
-        df["Entry Time"],
-        format="%H:%M:%S"
-    )
+    try:
+        # Convert Entry Time
+        df["Entry Time"] = pd.to_datetime(
+            df["Entry Time"],
+            format="%H:%M:%S",
+            errors="coerce"
+        )
 
-    # Extract Hour
-    df["Hour"] = df["Entry Time"].dt.strftime("%H:00")
+        df = df.dropna(subset=["Entry Time"])
 
-    hour_count = (
-        df["Hour"]
-        .value_counts()
-        .sort_index()
-        .reset_index()
-    )
+        # Extract Hour
+        df["Hour"] = df["Entry Time"].dt.strftime("%H:00")
 
-    hour_count.columns = ["Hour", "Visitors"]
+        hour_count = (
+            df["Hour"]
+            .value_counts()
+            .sort_index()
+            .reset_index()
+        )
 
-    st.subheader("Visitors by Hour")
+        hour_count.columns = ["Hour", "Visitors"]
 
-    st.dataframe(hour_count, width="stretch")
+        # ==========================
+        # KPI Cards
+        # ==========================
 
-    st.subheader("Peak Traffic Chart")
+        peak = hour_count.loc[
+            hour_count["Visitors"].idxmax()
+        ]
 
-    st.bar_chart(
-        hour_count.set_index("Hour")
-    )
+        total_entries = hour_count["Visitors"].sum()
 
-    peak = hour_count.loc[
-        hour_count["Visitors"].idxmax()
-    ]
+        avg_entries = round(
+            hour_count["Visitors"].mean(),
+            1
+        )
 
-    st.success(
-        f"🏆 Peak Traffic Hour : {peak['Hour']} ({peak['Visitors']} Visitors)"
-    )
+        col1, col2, col3 = st.columns(3)
+
+        with col1:
+            st.metric(
+                "🏆 Peak Hour",
+                peak["Hour"]
+            )
+
+        with col2:
+            st.metric(
+                "👥 Peak Visitors",
+                peak["Visitors"]
+            )
+
+        with col3:
+            st.metric(
+                "📊 Avg Visitors / Hour",
+                avg_entries
+            )
+
+        st.divider()
+
+        st.subheader("📋 Hour-wise Visitor Summary")
+
+        st.dataframe(
+            hour_count,
+            width="stretch"
+        )
+
+        st.divider()
+
+        st.subheader("📊 Hour-wise Traffic Chart")
+
+        st.bar_chart(
+            hour_count.set_index("Hour")
+        )
+
+        st.success(
+            f"🚦 Highest traffic was recorded at **{peak['Hour']}** with **{peak['Visitors']} visitors**."
+        )
+
+    except Exception as e:
+        st.error(f"Error: {e}")
