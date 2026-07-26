@@ -7,7 +7,7 @@ def show_sidebar():
     # BSP Logo
     # ==========================
     st.sidebar.image(
-        "assets/bsp_logo.jpg",
+        "Frontend/assets/bsp_logo.jpg",
         width="stretch"
     )
 
