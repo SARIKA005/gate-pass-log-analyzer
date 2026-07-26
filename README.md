@@ -74,10 +74,6 @@ Gate-Pass-Log-Analyzer/
 │   ├── Anomaly_Detection.py
 │   └── Reports.py
 │
-├── assets/
-│   ├── logo.png
-│   └── style.css
-│
 └── notebooks/                 # For experimentation only
     └── data_analysis.ipynb
      ```
