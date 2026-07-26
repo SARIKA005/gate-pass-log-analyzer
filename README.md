@@ -31,18 +31,27 @@ The dashboard provides:
  ```
 Gate-Pass-Log-Analyzer/
 │
-├── app.py                     # Main Streamlit app 
-├── requirements.txt
-├── README.md
-│
-├── data/                      # Sample Excel files
-│   └── GatePass_Log_100.xlsx
-│
-├── uploads/                   # Uploaded Excel files (optional)
-│
-├── outputs/                   # Generated reports
-│   ├── report.pdf
-│   └── report.csv
+├── Frontend/
+│   ├── assets/
+│   │   └── bsp_logo.jpg
+│   │
+│   ├── components/
+│   │   └── sidebar.py
+│   │
+│   ├── views/
+│   │   ├── ai_purpose.py
+│   │   ├── anomaly.py
+│   │   ├── dashboard.py
+│   │   ├── entry_exit.py
+│   │   ├── gate_analysis.py
+│   │   ├── login.py
+│   │   ├── peak_traffic.py
+│   │   ├── report.py
+│   │   └── upload.py
+│   │
+│   ├── app.py
+│   ├── requirements.txt
+│   └── style.py
 │
 ├── utils/                     # Backend utilities 
 │   ├── __init__.py
