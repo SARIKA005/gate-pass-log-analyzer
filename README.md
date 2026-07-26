@@ -67,13 +67,6 @@ Gate-Pass-Log-Analyzer/
 │   ├── anomaly_detector.py
 │   └── traffic_analysis.py
 │
-├── pages/                     # Streamlit pages 
-│   ├── Dashboard.py
-│   ├── Traffic_Analysis.py
-│   ├── Purpose_Analysis.py
-│   ├── Anomaly_Detection.py
-│   └── Reports.py
-│
 └── notebooks/                 # For experimentation only
     └── data_analysis.ipynb
      ```
