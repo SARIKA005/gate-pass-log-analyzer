@@ -7,7 +7,7 @@ def show_login():
     # BSP Logo
     # ==========================
     st.image(
-        "assets/bsp_logo.jpg",
+        "Frontend/assets/bsp_logo.jpg",
         width=180
     )
 
