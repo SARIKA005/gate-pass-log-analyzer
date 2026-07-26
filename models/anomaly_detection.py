@@ -8,9 +8,12 @@ def detect_anomalies(df):
 
     df = df.copy()
 
+    entry_col = "Entry Time" if "Entry Time" in df.columns else "entry_time"
+    exit_col = "Exit Time" if "Exit Time" in df.columns else "exit_time"
+
     # Convert datetime columns
-    df["entry_time"] = pd.to_datetime(df["entry_time"])
-    df["exit_time"] = pd.to_datetime(df["exit_time"])
+    df[entry_col] = pd.to_datetime(df[entry_col])
+    df[exit_col] = pd.to_datetime(df[exit_col])
 
     anomalies = []
 
@@ -19,19 +22,19 @@ def detect_anomalies(df):
         reasons = []
 
         # Rule 1: Exit before entry
-        if row["exit_time"] < row["entry_time"]:
+        if row[exit_col] < row[entry_col]:
             reasons.append("Exit before Entry")
 
         # Rule 2: Stay duration greater than 12 hours
         duration = (
-            row["exit_time"] - row["entry_time"]
+            row[exit_col] - row[entry_col]
         ).total_seconds() / 3600
 
         if duration > 12:
             reasons.append("Long Stay (>12 hrs)")
 
         # Rule 3: Entry during late night
-        if row["entry_time"].hour >= 23 or row["entry_time"].hour <= 4:
+        if row[entry_col].hour >= 23 or row[entry_col].hour <= 4:
             reasons.append("Late Night Entry")
 
         # Rule 4: Missing purpose
@@ -39,7 +42,7 @@ def detect_anomalies(df):
             reasons.append("Missing Purpose")
 
         # Rule 5: Missing exit time
-        if pd.isna(row["exit_time"]):
+        if pd.isna(row[exit_col]):
             reasons.append("Missing Exit Time")
 
         if reasons:

@@ -8,12 +8,15 @@ def preprocess_datetime(df):
 
     df = df.copy()
 
-    df["entry_time"] = pd.to_datetime(df["entry_time"])
-    df["exit_time"] = pd.to_datetime(df["exit_time"])
+    entry_col = "Entry Time" if "Entry Time" in df.columns else "entry_time"
+    exit_col = "Exit Time" if "Exit Time" in df.columns else "exit_time"
 
-    df["Entry Hour"] = df["entry_time"].dt.hour
-    df["Entry Date"] = df["entry_time"].dt.date
-    df["Weekday"] = df["entry_time"].dt.day_name()
+    df[entry_col] = pd.to_datetime(df[entry_col])
+    df[exit_col] = pd.to_datetime(df[exit_col])
+
+    df["Entry Hour"] = df[entry_col].dt.hour
+    df["Entry Date"] = df[entry_col].dt.date
+    df["Weekday"] = df[entry_col].dt.day_name()
 
     return df
 
