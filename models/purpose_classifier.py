@@ -3,6 +3,7 @@
 import numpy as np
 import pandas as pd
 
+
 try:
     from sentence_transformers import SentenceTransformer
 except ImportError as exc:

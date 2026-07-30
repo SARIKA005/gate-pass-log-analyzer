@@ -1,6 +1,8 @@
 import streamlit as st
 import pandas as pd
 
+from models.traffic_analysis import forecast_daily_traffic
+
 
 def show_peak_traffic():
 
@@ -93,6 +95,52 @@ def show_peak_traffic():
         st.success(
             f"🚦 Highest traffic was recorded at **{peak['Hour']}** with **{peak['Visitors']} visitors**."
         )
+
+        st.divider()
+
+        # ==========================
+        # AI Traffic Forecast (Linear Regression)
+        # ==========================
+
+        st.subheader("📈 AI Traffic Forecast — Next 7 Days")
+        st.caption(
+            "A Linear Regression model fits a straight-line trend through the "
+            "historical daily visitor counts and extends it forward. Simple by "
+            "design so the trend is easy to read and explain."
+        )
+
+        forecast_df, trend, r_squared = forecast_daily_traffic(
+            st.session_state["data"], days_ahead=7
+        )
+
+        if forecast_df.empty:
+            st.info(
+                "Not enough distinct dates in this dataset yet to fit a reliable "
+                "trend (need at least 3 different visit dates)."
+            )
+        else:
+            trend_label = {
+                "increasing": "📈 Increasing",
+                "decreasing": "📉 Decreasing",
+                "stable": "➡️ Stable",
+            }.get(trend, trend)
+
+            fcol1, fcol2 = st.columns(2)
+
+            with fcol1:
+                st.metric("Footfall Trend", trend_label)
+
+            with fcol2:
+                st.metric("Model Fit (R²)", r_squared)
+
+            st.dataframe(
+                forecast_df,
+                width="stretch"
+            )
+
+            st.line_chart(
+                forecast_df.set_index("Date")["Predicted Visitors"]
+            )
 
     except Exception as e:
         st.error(f"Error: {e}")

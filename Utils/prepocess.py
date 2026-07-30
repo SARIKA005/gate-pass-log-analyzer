@@ -1,43 +1,57 @@
 import pandas as pd
 
 
+def _first_present(df, options):
+    """Return the first column name from `options` that exists in df."""
+    for name in options:
+        if name in df.columns:
+            return name
+    return None
+
+
 def preprocess(df):
-    """
-    Perform preprocessing and feature engineering.
-    """
+    
 
     df = df.copy()
 
-    # Normalize column names for user-friendly display
-    if "entry_time" in df.columns and "Entry Time" not in df.columns:
-        df = df.rename(columns={"entry_time": "Entry Time"})
-    if "exit_time" in df.columns and "Exit Time" not in df.columns:
-        df = df.rename(columns={"exit_time": "Exit Time"})
+    date_col = _first_present(df, ["visit_date", "Visit Date", "visit date"])
+    entry_col = _first_present(df, ["Entry Time", "entry_time"])
+    exit_col = _first_present(df, ["Exit Time", "exit_time"])
 
-    # Convert datetime columns
-    df["Entry Time"] = pd.to_datetime(df["Entry Time"], errors="coerce")
-    df["Exit Time"] = pd.to_datetime(df["Exit Time"], errors="coerce")
+    def combine(date_col, time_col):
+        if time_col is None:
+            return pd.Series(pd.NaT, index=df.index)
+        if date_col is not None:
+            base_date = pd.to_datetime(df[date_col], errors="coerce").dt.strftime("%Y-%m-%d")
+            combined = base_date.fillna("") + " " + df[time_col].astype(str)
+            return pd.to_datetime(combined, errors="coerce")
+        # No separate date column available - fall back to parsing the
+        # time column directly (all rows will share one placeholder date,
+        # which is still fine for hour-of-day style aggregations).
+        return pd.to_datetime(df[time_col], errors="coerce")
 
-    # Entry features
-    df["entry_hour"] = df["Entry Time"].dt.hour
-    df["entry_day"] = df["Entry Time"].dt.day_name()
-    df["entry_date"] = df["Entry Time"].dt.date
-    df["entry_month"] = df["Entry Time"].dt.month_name()
-    df["entry_year"] = df["Entry Time"].dt.year
+    df["Entry Datetime"] = combine(date_col, entry_col)
+    df["Exit Datetime"] = combine(date_col, exit_col)
 
-    # Weekend flag
-    df["is_weekend"] = df["Entry Time"].dt.dayofweek >= 5
-
-    # Working hours flag (9 AM - 6 PM)
+    # Time-based features
+    df["entry_hour"] = df["Entry Datetime"].dt.hour
+    df["entry_day"] = df["Entry Datetime"].dt.day_name()
+    df["entry_date"] = df["Entry Datetime"].dt.date
+    df["entry_month"] = df["Entry Datetime"].dt.month_name()
+    df["entry_year"] = df["Entry Datetime"].dt.year
+    df["is_weekend"] = df["Entry Datetime"].dt.dayofweek >= 5
     df["working_hours"] = df["entry_hour"].between(9, 18)
 
-    # Visit duration (minutes)
-    df["visit_duration"] = (
-        (df["Exit Time"] - df["Entry Time"])
-        .dt.total_seconds() / 60
+    # Visit duration in minutes. Negative values (exit logged before
+    # entry) are kept as-is on purpose -- the anomaly detector uses
+    # them to flag "Exit before Entry" as a data-quality issue instead
+    # of silently hiding it.
+    df["visit_duration_min"] = (
+        (df["Exit Datetime"] - df["Entry Datetime"]).dt.total_seconds() / 60
     )
 
-    # Remove negative durations
-    df.loc[df["visit_duration"] < 0, "visit_duration"] = None
-
     return df
+
+
+# Backward-compatible alias (older code / notebooks may import this name).
+build_datetime_features = preprocess

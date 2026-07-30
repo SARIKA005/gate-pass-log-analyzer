@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 
-from models.purpose_classifier import classify_dataframe
+from models.purpose_classifier import classify_dataframe, analyze_other_cluster
 
 
 def show_ai_purpose():
@@ -43,7 +43,9 @@ def show_ai_purpose():
 
     top_category = category_count.iloc[0]
 
-    col1, col2, col3 = st.columns(3)
+    avg_confidence = round(df["Category_Confidence"].mean(), 3)
+
+    col1, col2, col3, col4 = st.columns(4)
 
     with col1:
         st.metric(
@@ -53,7 +55,7 @@ def show_ai_purpose():
 
     with col2:
         st.metric(
-            "📂 AI Categories",
+            "📂Categories",
             total_categories
         )
 
@@ -61,6 +63,12 @@ def show_ai_purpose():
         st.metric(
             "🏆 Top Category",
             top_category["AI Category"]
+        )
+
+    with col4:
+        st.metric(
+            "🎯 Avg. Confidence",
+            avg_confidence
         )
 
     st.divider()
@@ -99,7 +107,8 @@ def show_ai_purpose():
     columns = [
         "Visitor Name",
         "Purpose of Visit",
-        "AI Category"
+        "AI Category",
+        "Category_Confidence"
     ]
 
     available_columns = [
@@ -108,11 +117,55 @@ def show_ai_purpose():
         if col in df.columns
     ]
 
+    display_df = df[available_columns].rename(
+        columns={"Category_Confidence": "Confidence"}
+    )
+
     st.dataframe(
-        df[available_columns],
+        display_df,
         width="stretch"
+    )
+
+    st.caption(
+        f"Confidence is the cosine-similarity score (0–1) between a visitor's stated "
+        f"purpose and the closest category description. Anything below "
+        f"**{0.35}** gets bucketed as 'Other' instead of being force-fit into a wrong category."
     )
 
     st.success(
         f"✅ Most visitors belong to the '{top_category['AI Category']}' category."
     )
+
+    st.divider()
+
+    # ==========================
+    # Auto-Discover New Categories from "Other"
+    # ==========================
+
+    st.subheader("🔍 Discover Hidden Patterns in 'Other'")
+    st.caption(
+        "Whatever didn't match an existing category gets grouped with KMeans "
+        "clustering, so you can spot a new recurring purpose (e.g. 'Bill Payment' "
+        "or 'RTI Query') that the fixed category list doesn't cover yet."
+    )
+
+    other_count = int((df["AI Category"] == "Other").sum())
+
+    if other_count < 5:
+        st.info(
+            f"Only {other_count} record(s) fell into 'Other' — need at least 5 "
+            "to form meaningful clusters."
+        )
+    else:
+        n_clusters = min(5, other_count // 2) or 1
+        clustered = analyze_other_cluster(
+            df, purpose_col="Purpose of Visit", n_clusters=n_clusters
+        )
+
+        for cluster_id in sorted(clustered["Cluster"].unique()):
+            cluster_rows = clustered[clustered["Cluster"] == cluster_id]
+            samples = cluster_rows["Purpose of Visit"].head(3).tolist()
+
+            with st.expander(f"Cluster {cluster_id} — {len(cluster_rows)} visitor(s)"):
+                for sample in samples:
+                    st.write(f"• {sample}")
