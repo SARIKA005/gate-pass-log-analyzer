@@ -2,7 +2,15 @@
 
 import numpy as np
 import pandas as pd
-from sentence_transformers import SentenceTransformer
+
+try:
+    from sentence_transformers import SentenceTransformer
+except ImportError as exc:
+    raise ImportError(
+        "Missing dependency 'sentence-transformers'. Install it with "
+        "'pip install sentence-transformers' or add it to requirements.txt."
+    ) from exc
+
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.cluster import KMeans
 

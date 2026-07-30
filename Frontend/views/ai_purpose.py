@@ -1,49 +1,7 @@
 import streamlit as st
 import pandas as pd
 
-
-def categorize_purpose(purpose):
-
-    if pd.isna(purpose):
-        return "Unknown"
-
-    purpose = str(purpose).lower()
-
-    if any(word in purpose for word in [
-        "meeting",
-        "inspection",
-        "official",
-        "audit",
-        "review"
-    ]):
-        return "Official Visit"
-
-    elif any(word in purpose for word in [
-        "vendor",
-        "delivery",
-        "material",
-        "supply"
-    ]):
-        return "Vendor"
-
-    elif any(word in purpose for word in [
-        "maintenance",
-        "repair",
-        "contract",
-        "service"
-    ]):
-        return "Contractor"
-
-    elif any(word in purpose for word in [
-        "interview",
-        "personal",
-        "visitor",
-        "guest"
-    ]):
-        return "Visitor"
-
-    else:
-        return "Other"
+from models.purpose_classifier import classify_dataframe
 
 
 def show_ai_purpose():
@@ -60,8 +18,9 @@ def show_ai_purpose():
         st.error("Column 'Purpose of Visit' not found.")
         return
 
-    # AI Categorization
-    df["AI Category"] = df["Purpose of Visit"].apply(categorize_purpose)
+    # AI Categorization (semantic embeddings, not keyword matching)
+    df = classify_dataframe(df, purpose_col="Purpose of Visit")
+    df["AI Category"] = df["Purpose_Category"]
 
     category_count = (
         df["AI Category"]
