@@ -4,6 +4,7 @@ numpy
 openpyxl
 matplotlib
 plotly
+pillow
 scikit-learn
 fpdf2
 sentence_transformers
