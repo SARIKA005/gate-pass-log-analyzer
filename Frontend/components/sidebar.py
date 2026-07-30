@@ -1,4 +1,5 @@
 import streamlit as st
+from pathlib import Path
 
 
 def show_sidebar():
@@ -6,8 +7,11 @@ def show_sidebar():
     # ==========================
     # BSP Logo
     # ==========================
+    BASE_DIR = Path(__file__).resolve().parent.parent
+    logo_path = BASE_DIR / "assets" / "bsp_logo.jpg"
+
     st.sidebar.image(
-        "Frontend/assets/bsp_logo.jpg",
+        str(logo_path),
         width="stretch"
     )
 
