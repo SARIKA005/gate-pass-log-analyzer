@@ -4,6 +4,7 @@ import plotly.express as px
 
 
 def show():
+
     st.title("🚗 Vehicle State Analysis")
 
     if "data" not in st.session_state:
@@ -52,18 +53,27 @@ def show():
         "WB": "West Bengal"
     }
 
-    vehicle_numbers = (
+    # Keep only actual vehicle numbers
+    vehicles = (
         df["vehicle_no"]
-        .fillna("")
+        .dropna()
         .astype(str)
         .str.upper()
         .str.strip()
     )
 
+    vehicles = vehicles[
+        (vehicles != "") &
+        (vehicles.str.lower() != "nan") &
+        (vehicles.str.lower() != "none")
+    ]
+
     valid_states = []
     invalid_count = 0
 
-    for vehicle in vehicle_numbers:
+    for vehicle in vehicles:
+
+        # Minimum state code length
         if len(vehicle) < 2:
             invalid_count += 1
             continue
@@ -87,21 +97,21 @@ def show():
 
     state_count.columns = ["State", "Vehicles"]
 
-    total_entries = len(vehicle_numbers)
+    total_entries = len(vehicles)
     valid_count = len(valid_states)
     total_states = len(state_count)
 
     top_state = state_count.iloc[0]["State"]
     top_state_count = state_count.iloc[0]["Vehicles"]
 
-    top_percentage = round((top_state_count / valid_count) * 100, 2)
+    top_percentage = round(
+        (top_state_count / valid_count) * 100,
+        2
+    )
 
-    local_count = state_count.loc[
-        state_count["State"] == "Chhattisgarh",
-        "Vehicles"
-    ].sum()
-
-    outside_count = valid_count - local_count
+    # ==========================
+    # KPI Cards
+    # ==========================
 
     c1, c2, c3 = st.columns(3)
 
@@ -116,6 +126,10 @@ def show():
     c6.metric("📊 Top State %", f"{top_percentage}%")
 
     st.divider()
+
+    # ==========================
+    # Bar Chart
+    # ==========================
 
     st.subheader("📈 State-wise Vehicle Count")
 
@@ -132,9 +146,16 @@ def show():
         yaxis_title="Number of Vehicles"
     )
 
-    st.plotly_chart(fig, width="stretch")
+    st.plotly_chart(
+        fig,
+        width="stretch"
+    )
 
     st.divider()
+
+    # ==========================
+    # Pie Chart
+    # ==========================
 
     st.subheader("🥧 State Distribution")
 
@@ -144,31 +165,28 @@ def show():
         values="Vehicles"
     )
 
-    st.plotly_chart(pie, width="stretch")
-
-    st.divider()
-
-    st.subheader("🚘 Local vs Outside State")
-
-    col1, col2 = st.columns(2)
-
-    col1.metric(
-        "Local (CG)",
-        local_count
-    )
-
-    col2.metric(
-        "Outside State",
-        outside_count
+    st.plotly_chart(
+        pie,
+        width="stretch"
     )
 
     st.divider()
+
+    # ==========================
+    # Top 5 States
+    # ==========================
 
     st.subheader("🏅 Top 5 States")
 
-    st.table(state_count.head(5))
+    st.table(
+        state_count.head(5)
+    )
 
     st.divider()
+
+    # ==========================
+    # Complete Table
+    # ==========================
 
     st.subheader("📋 Complete State-wise Analysis")
 

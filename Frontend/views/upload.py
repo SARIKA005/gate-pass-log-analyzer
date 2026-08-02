@@ -45,9 +45,28 @@ def show_upload():
         try:
 
             df = pd.read_excel(uploaded_file)
-            df = df.astype(str)   
-            st.session_state["data"] = df
 
+            # Remove completely empty rows
+            df = df.dropna(how="all")
+
+            # Remove leading/trailing spaces from column names
+            df.columns = df.columns.str.strip()
+
+            # Remove the instruction/note row at the bottom (if present)
+            first_column = df.columns[0]
+
+            df = df[
+                ~df[first_column]
+                .astype(str)
+                .str.strip()
+                .str.lower()
+                .str.startswith("note")
+            ]
+            # Reset row numbers after removing rows
+            df = df.reset_index(drop=True)
+
+            st.session_state["data"] = df
+            st.write("Total Rows Loaded:", len(df))
             st.success("✅ File uploaded successfully!")
 
             st.subheader("Preview")
