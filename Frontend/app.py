@@ -16,6 +16,7 @@ from views.gate_analysis import show_gate_analysis
 from views.peak_traffic import show_peak_traffic
 from views.entry_exit import show_entry_exit
 from views.ai_purpose import show_ai_purpose
+from views.vehicle_state import show as show_vehicle_state
 from views.anomaly import show_anomaly
 from views.report import show_report
 # ----------------------------------
@@ -77,6 +78,10 @@ else:
     elif page == "🤖 AI Purpose":
 
         show_ai_purpose()
+
+    elif page == "🚗 Vehicle State Analysis":
+
+        show_vehicle_state()
 
     elif page == "⚠️ Anomaly Detection":
 

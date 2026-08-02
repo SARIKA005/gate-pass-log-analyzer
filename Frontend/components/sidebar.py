@@ -45,6 +45,8 @@ def show_sidebar():
 
             "🤖 AI Purpose",
 
+            "🚗 Vehicle State Analysis",
+
             "⚠️ Anomaly Detection",
 
             "📄 Generate Report"
