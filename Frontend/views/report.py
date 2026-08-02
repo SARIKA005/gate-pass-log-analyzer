@@ -175,23 +175,146 @@ The busiest entry hour is **{peak_hour}**.
     st.subheader("📄 Complete Dataset")
 
     st.dataframe(
-        df,
-        width="stretch"
+    df,
+    width="stretch"
     )
 
     # ==========================
     # Download Report
     # ==========================
-
     st.divider()
+    st.subheader("📥 Download Analysis Report")
 
-    st.subheader("📥 Download Report")
+    report = []
 
-    csv = df.to_csv(index=False).encode("utf-8")
+    # Header
+    report.append(["BSP GATE PASS LOG ANALYZER", ""])
+    report.append(["Steel Authority of India Limited (SAIL)", ""])
+    report.append(["ANALYSIS REPORT", ""])
+    report.append(["", ""])
+
+    # Executive Summary
+    report.append(["Executive Summary", ""])
+    report.append(["Total Visitors", total_visitors])
+    report.append(["Total Gates", total_gates])
+    report.append(["Visitors Inside", visitors_inside])
+    report.append(["Completed Exits", total_exits])
+    report.append(["Peak Traffic Hour", peak_hour])
+    report.append(["Total Visit Purposes", total_purposes])
+    report.append(["Total ID Types", total_id_types])
+
+    # Vehicle State Summary
+    if "Vehicle_no" in df.columns:
+
+        state_codes = {
+            "AP":"Andhra Pradesh","AR":"Arunachal Pradesh","AS":"Assam",
+            "BR":"Bihar","CG":"Chhattisgarh","CH":"Chandigarh",
+            "DL":"Delhi","GA":"Goa","GJ":"Gujarat",
+            "HR":"Haryana","HP":"Himachal Pradesh",
+            "JH":"Jharkhand","JK":"Jammu & Kashmir",
+            "KA":"Karnataka","KL":"Kerala","LA":"Ladakh",
+            "MH":"Maharashtra","ML":"Meghalaya","MN":"Manipur",
+            "MP":"Madhya Pradesh","MZ":"Mizoram","NL":"Nagaland",
+            "OD":"Odisha","PB":"Punjab","PY":"Puducherry",
+            "RJ":"Rajasthan","SK":"Sikkim","TN":"Tamil Nadu",
+            "TR":"Tripura","TS":"Telangana","UK":"Uttarakhand",
+            "UP":"Uttar Pradesh","WB":"West Bengal"
+        }
+
+        vehicles = (
+            df["Vehicle_no"]
+            .fillna("")
+            .astype(str)
+            .str.upper()
+            .str.strip()
+        )
+
+        valid_states = []
+        invalid = 0
+
+        for vehicle in vehicles:
+
+            if len(vehicle) < 2:
+                invalid += 1
+                continue
+
+            code = vehicle[:2]
+
+            if code in state_codes:
+                valid_states.append(state_codes[code])
+            else:
+                invalid += 1
+
+        if valid_states:
+
+            state_summary = (
+                pd.Series(valid_states)
+                .value_counts()
+                .reset_index()
+            )
+
+            state_summary.columns = ["State", "Vehicles"]
+
+            report.append(["", ""])
+            report.append(["Vehicle State Summary", ""])
+            report.append(["Valid Vehicle Numbers", len(valid_states)])
+            report.append(["Invalid Vehicle Numbers", invalid])
+            report.append(["Total States Represented", len(state_summary)])
+            report.append(["Top State", state_summary.iloc[0]["State"]])
+
+            report.append(["", ""])
+            report.append(["Top 5 States", ""])
+            report.append(["State", "Vehicles"])
+
+            for _, row in state_summary.head(5).iterrows():
+                report.append([row["State"], row["Vehicles"]])
+
+    # Gate Summary
+    if "Gate No" in df.columns:
+
+        report.append(["", ""])
+        report.append(["Gate-wise Summary", ""])
+        report.append(["Gate", "Visitors"])
+
+        gate_summary = (
+            df["Gate No"]
+            .value_counts()
+            .reset_index()
+        )
+
+        gate_summary.columns = ["Gate", "Visitors"]
+
+        for _, row in gate_summary.iterrows():
+            report.append([row["Gate"], row["Visitors"]])
+
+    # Purpose Summary
+    if "Purpose of Visit" in df.columns:
+
+        report.append(["", ""])
+        report.append(["Purpose Summary", ""])
+        report.append(["Purpose", "Visitors"])
+
+        purpose_summary = (
+            df["Purpose of Visit"]
+            .value_counts()
+            .reset_index()
+        )
+
+        purpose_summary.columns = ["Purpose", "Visitors"]
+
+        for _, row in purpose_summary.iterrows():
+            report.append([row["Purpose"], row["Visitors"]])
+
+    report_df = pd.DataFrame(report)
+
+    csv = report_df.to_csv(
+        index=False,
+        header=False
+    ).encode("utf-8")
 
     st.download_button(
-        label="⬇️ Download Report (CSV)",
+        label="⬇️ Download Analysis Report",
         data=csv,
-        file_name="BSP_Gate_Pass_Report.csv",
+        file_name="BSP_Gate_Pass_Analysis_Report.csv",
         mime="text/csv"
     )
