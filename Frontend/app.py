@@ -1,13 +1,13 @@
+```python
 import sys
 from pathlib import Path
 
-
 ROOT_DIR = Path(__file__).resolve().parent.parent
+
 if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
 import streamlit as st
-
 
 from views.dashboard import show_dashboard
 from views.upload import show_upload
@@ -19,62 +19,46 @@ from views.ai_purpose import show_ai_purpose
 from views.vehicle_state import show as show_vehicle_state
 from views.anomaly import show_anomaly
 from views.report import show_report
-# ----------------------------------
+
 # Page Configuration
-# ----------------------------------
-
 st.set_page_config(
-
     page_title="BSP Gate Pass Log Analyzer",
-
     page_icon="🏭",
-
     layout="wide"
-
 )
 
+# Sidebar Navigation
+page = show_sidebar()
 
+# Page Routing
+if page == "🏠 Dashboard":
+    show_dashboard()
 
+elif page == "📂 Upload Excel":
+    show_upload()
 
-    page = show_sidebar()
+elif page == "📊 Gate-wise Analysis":
+    show_gate_analysis()
 
-    if page == "🏠 Dashboard":
+elif page == "🚦 Peak Traffic":
+    show_peak_traffic()
 
-        show_dashboard()
+elif page == "🚪 Entry Exit":
+    show_entry_exit()
 
-    elif page == "📂 Upload Excel":
+elif page == "🤖 AI Purpose":
+    show_ai_purpose()
 
-        show_upload()
+elif page == "🚗 Vehicle State Analysis":
+    show_vehicle_state()
 
-    elif page == "📊 Gate-wise Analysis":
+elif page == "⚠️ Anomaly Detection":
+    show_anomaly()
 
-        show_gate_analysis()
+elif page == "📄 Generate Report":
+    show_report()
 
-    elif page == "🚦 Peak Traffic":
-
-        show_peak_traffic() 
-
-    elif page == "🚪 Entry Exit":
-
-        show_entry_exit()
-
-    elif page == "🤖 AI Purpose":
-
-        show_ai_purpose()
-
-    elif page == "🚗 Vehicle State Analysis":
-
-        show_vehicle_state()
-
-    elif page == "⚠️ Anomaly Detection":
-
-        show_anomaly() 
-
-    elif page == "📄 Generate Report":
-        
-        show_report()                    
-    else:
-
-        st.title(page)
-
-        st.info("This module will be developed in the next step.")
+else:
+    st.title(page)
+    st.info("This module will be developed in the next step.")
+```
