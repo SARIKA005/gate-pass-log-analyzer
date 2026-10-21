@@ -8,7 +8,7 @@ if str(ROOT_DIR) not in sys.path:
 
 import streamlit as st
 
-from views.login import show_login
+
 from views.dashboard import show_dashboard
 from views.upload import show_upload
 from components.sidebar import show_sidebar
