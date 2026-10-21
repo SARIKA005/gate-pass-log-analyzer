@@ -1,4 +1,4 @@
-```python
+
 import sys
 from pathlib import Path
 
@@ -61,4 +61,4 @@ elif page == "📄 Generate Report":
 else:
     st.title(page)
     st.info("This module will be developed in the next step.")
-```
+
