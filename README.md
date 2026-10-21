@@ -44,7 +44,6 @@ Gate-Pass-Log-Analyzer/
 │   │   ├── dashboard.py
 │   │   ├── entry_exit.py
 │   │   ├── gate_analysis.py
-│   │   ├── login.py
 │   │   ├── peak_traffic.py
 │   │   ├── report.py
 │   │   └── upload.py
@@ -134,6 +133,9 @@ These observations can assist security teams in prioritizing records for further
 - Educational Institutions
 - Industrial Facilities
 - Research Campuses
+  
+## Website Link
+https://gate-pass-log-analyzer-x7ggztqsytcjsx2awdqkz5.streamlit.app/
 
 ⭐ If you find this project useful, consider giving it a star.
 
