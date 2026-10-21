@@ -34,24 +34,7 @@ st.set_page_config(
 )
 
 
-# ----------------------------------
-# Session State
-# ----------------------------------
 
-if "logged_in" not in st.session_state:
-
-    st.session_state.logged_in = False
-
-
-# ----------------------------------
-# Main Application
-# ----------------------------------
-
-if not st.session_state.logged_in:
-
-    show_login()
-
-else:
 
     page = show_sidebar()
 
